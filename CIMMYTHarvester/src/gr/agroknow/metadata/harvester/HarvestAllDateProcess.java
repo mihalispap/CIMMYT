@@ -80,6 +80,7 @@ public class HarvestAllDateProcess {
 			/*get the lom metadata : item.getMetadata();
 			 * this return a Node which contains the lom metadata.
 			 */
+
 			if(!item.deleted()) {
 				Element metadata = item.getMetadata();
 				if(metadata != null) {

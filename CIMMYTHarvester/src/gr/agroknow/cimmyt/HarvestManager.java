@@ -29,7 +29,8 @@ public class HarvestManager {
         } 
 //        else{ throw new IOException("ERRROR");}    
         
-        //"http://ageconsearch.umn.edu/dspace-oai/request" C:\Users\Mihalis\Desktop\testsets\  "oai_dc"
+        //"http://data.cimmyt.org/dvn/OAIHandler" C:\Users\Mihalis\Desktop\testsets\  "oai_dc"
+        //"http://repository.cimmyt.org/oai/request" C:\Users\Mihalis\Desktop\testsets2\  "oai_dc"
         
        listRecords(args[0],args[1],args[2]);           
               

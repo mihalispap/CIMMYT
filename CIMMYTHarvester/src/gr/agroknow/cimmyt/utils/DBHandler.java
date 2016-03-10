@@ -158,7 +158,7 @@ public class DBHandler {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
+			break;
 			//args[0]=target;
 			//if(i==1)
 			//	break;
