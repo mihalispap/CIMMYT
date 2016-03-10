@@ -77,6 +77,8 @@ public class CimmytRecord extends OAIRecord  {
                      Element classElement = ret;
 
                      List<Element> resourceList = classElement.getChildren();
+                     //System.out.println("RL:"+resourceList.toString());
+                     String urlV="";
                      //System.out.println(resourceList.toString());
 
                      for (int i = 0; i < resourceList.size(); i++) 
@@ -85,36 +87,32 @@ public class CimmytRecord extends OAIRecord  {
                     	
                         Element resource_tag = resourceList.get(i);
                         //System.out.println("\nCurrent Element:" + resource_tag.getName());
-
+                        //String content=resource_tag.getText();
+                		//System.out.println("I:"+i+", name:"+resource_tag.getName()
+                		//		+", text:"+resource_tag.getText());
+                		
                         if(resource_tag.getName().equals("identifier"))
                         {
 
+                        	
                         	if(!resource_tag.getText().contains("http://"))
                         	{
                         		String content=resource_tag.getText();
-                        		if(content.equals("0188-2465"))
-                        			System.out.println("Content:"+content+"|SIZE:"+content.length());
-                        		if(content.equals("968-6923-44-6"))
-                        		{
-                        			System.out.println("Content:"+content+"|SIZE:"+content.length());
-                        			System.out.println("RL:"+resourceList.toString());
-                        		}
+                        		
                             	//System.out.println("Content:"+content+"|SIZE:"+content.length());
                             	if(content.length()==13)
                             	{
                             		//sample: 968-6923-44-6
-                            		//System.out.println("ISBN");
-                            		resource_tag.detach();                  	
-                                	ret.addContent(new Element("isbn").setText(content));
+                            		//resource_tag.detach();    
+                            		resource_tag.setName("isbn");
+                                	//ret.addContent(new Element("isbn").setText(content));
                             	}
                             	if(content.length()==9)
                             	{
                             		//sample: 0188-2465
-                            		if(content.equals("0188-2465"))
-                            			System.out.println("Content:"+content+"|SIZE:"+content.length());
-                            		//System.out.println("ISSN");
-                            		resource_tag.detach();                  	
-                                	ret.addContent(new Element("issn").setText(content));
+                            		//resource_tag.detach();
+                            		resource_tag.setName("issn");
+                                	//ret.addContent(new Element("issn").setText(content));
                             	}
                             	continue;
                         	}
@@ -124,12 +122,15 @@ public class CimmytRecord extends OAIRecord  {
                         	{
                         		if(resource_tag.getText().contains(".pdf"))
                         		{
-                        			ret.addContent(new Element("pdf").setText("true"));
+                        			resource_tag.setName("pdf");
+                        			//ret.addContent(new Element("pdf").setText("true"));
                         		}
                         		continue;
                         	}
                         	String url=resource_tag.getText().replace("http://", "");
                         	String[] url_array=url.split("/");
+                        	
+                        	urlV=resource_tag.getText();
                         	
                         	try
                         	{
@@ -155,9 +156,10 @@ public class CimmytRecord extends OAIRecord  {
                         		continue;
                         	
                         	//sample: Citation: Vargas, Mateo; Combs, Emily; [...]
-                        	resource_tag.detach();
-                        	descr=descr.replace("Citation: ","");                        	
-                        	ret.addContent(new Element("citation").setText(descr));
+                        	//resource_tag.detach();
+                        	descr=descr.replace("Citation: ","");  
+                        	resource_tag.setName("citation");
+                        	//ret.addContent(new Element("citation").setText(descr));
                         }
                         
                         if(resource_tag.getName().equals("relation"))
@@ -180,10 +182,21 @@ public class CimmytRecord extends OAIRecord  {
                         	}                     	
                         	
                         }
+
+                        if(resource_tag.getName().equals("publisher"))
+                        {
+                        	if(resource_tag.getText().contains("http://") && resource_tag.getText().contains(".pdf"))
+                        	{
+                        		resource_tag.setName("pdf");
+                        	}
+                        }
+                        
                                   		
                      }
                      for(int i=0;i<sets.size();i++)
                     	 ret.addContent(new Element("set").setText(sets.get(i)));
+                     
+                     System.out.println("----------\nFOR:"+urlV+"\n----------------------");
             }
         }
         catch (JDOMException e) {
