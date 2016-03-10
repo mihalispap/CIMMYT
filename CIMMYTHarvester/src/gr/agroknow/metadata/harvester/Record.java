@@ -3,6 +3,7 @@ package gr.agroknow.metadata.harvester;
 import org.jdom.Document;
 import org.jdom.Element;
 
+import gr.agroknow.cimmyt.CimmytRecord;
 import uiuc.oai.OAIException;
 import uiuc.oai.OAIRecord;
 
@@ -10,7 +11,7 @@ public class Record {
 
 	protected Element metadata;
 	protected String oaiIdentifier;
-	protected OAIRecord oaiRecord;
+	protected CimmytRecord oaiRecord;
 	
 	public Element getMetadata() {
 		return metadata;
@@ -27,7 +28,7 @@ public class Record {
 	public OAIRecord getOaiRecord() {
 		return oaiRecord;
 	}
-	public void setOaiRecord(OAIRecord oaiRecord) throws OAIException {
+	public void setOaiRecord(CimmytRecord oaiRecord) throws OAIException {
 			this.oaiRecord = oaiRecord;
 			setMetadata(oaiRecord.getMetadata());
 			setOaiIdentifier(oaiRecord.getIdentifier());

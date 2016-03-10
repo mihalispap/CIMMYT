@@ -7,7 +7,11 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.jdom.JDOMException;
@@ -55,7 +59,7 @@ public class DBHandler {
 		}
 		catch(IOException e)
 		{
-			System.out.println("Some exception");
+			System.out.println("File not found, first time harvesting?");
 		}
 		System.out.println("Finished processing");
 	}
@@ -119,9 +123,9 @@ public class DBHandler {
 		HarvestAllDateProcess harvest_set=new HarvestAllDateProcess();
 		String[] args = new String[6];
 		
-		args[0]="http://repository.cimmyt.org/oai/request";//target;
+		args[0]=target;//"http://repository.cimmyt.org/oai/request";//target;
 		args[1]=folderName;
-		args[2]=metadataPrefix;
+		args[2]=metadataPrefix; 
 		
 		/*
 		 * TODO: 
@@ -129,25 +133,35 @@ public class DBHandler {
 		 * 
 		 * */
 		
+		SimpleDateFormat sdf = new SimpleDateFormat ("yyyy-MM-dd");	
+		
+		Calendar calendar = new GregorianCalendar();
+			
+		//subtract 10 days
+		calendar.add(Calendar.DAY_OF_MONTH, -2);
+		System.out.println("Date : " + sdf.format(calendar.getTime()));
+		
+		String until=sdf.format(calendar.getTime());
+		
 		for(int i=0;i<sets.size();i++)
 		{
 			args[4]=sets.get(i).getLastIndexed();
-			args[3]="2012-01-01";	//TODO: change until yesterday!
+			args[3]=until;//"2012-01-01";	//TODO: change until yesterday!
 			args[5]=sets.get(i).getSetSpec();
 			try {
 				int norecords=harvest_set.run(args);
 				
 				/*TODO: to think about it..*/
 				if(norecords!=0)
-					sets.get(i).setLastIndexed("2012-01-01");
+					sets.get(i).setLastIndexed(until);
 			} catch (OAIException | IOException | JDOMException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			
-			args[0]=target;
-			if(i==1)
-				break;
+			//args[0]=target;
+			//if(i==1)
+			//	break;
 			
 		}
 	}

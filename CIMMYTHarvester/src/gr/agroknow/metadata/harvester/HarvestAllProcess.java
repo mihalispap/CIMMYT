@@ -92,7 +92,8 @@ public class HarvestAllProcess{
 				if(metadata != null) {
 					System.out.println(item.getIdentifier());
 					Record rec = new Record();
-					rec.setOaiRecord(item);
+					/*TODO: uncomment if needed!*/
+					//rec.setOaiRecord(item);
 					rec.setMetadata(item.getMetadata());
 					rec.setOaiIdentifier(item.getIdentifier());
                                         identifier = item.getIdentifier().replaceAll(":", "_");

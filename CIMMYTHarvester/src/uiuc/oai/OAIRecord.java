@@ -30,7 +30,7 @@ public class OAIRecord {
     private String strMetadataPrefix = "";
     private boolean boolIdOnly = true;
     private boolean boolValid = true;
-    private Element xmlRecord = null;
+    protected Element xmlRecord = null;
     private OAIRepository repo;
 
     public String getMetadataNamespaceURI() throws OAIException {
@@ -74,7 +74,7 @@ public class OAIRecord {
         return ret;
     }
 
-    private void priCheckIdOnly() throws OAIException {
+    protected void priCheckIdOnly() throws OAIException {
         if (this.boolIdOnly) {
             this.refreshRecord();
         }
@@ -107,6 +107,9 @@ public class OAIRecord {
     }
 
     public Element getMetadata() throws OAIException {
+    	
+    	System.out.println("I got in here2!");
+    	
         Element ret = null;
         this.priCheckIdOnly();
         try {
@@ -243,35 +246,35 @@ public class OAIRecord {
         return ret;
     }
 
-    protected void frndSetIdentifier(String i) {
+    public void frndSetIdentifier(String i) {
         this.strIdentifier = i;
     }
 
-    protected void frndSetDatestamp(String d) {
+    public void frndSetDatestamp(String d) {
         this.strDatestamp = d;
     }
 
-    protected void frndSetRepository(OAIRepository r) {
+    public void frndSetRepository(OAIRepository r) {
         this.repo = r;
     }
 
-    protected void frndSetMetadataPrefix(String m) {
+    public void frndSetMetadataPrefix(String m) {
         this.strMetadataPrefix = m;
     }
 
-    protected void frndSetValid(boolean v) {
+    public void frndSetValid(boolean v) {
         this.boolValid = v;
     }
 
-    protected void frndSetIdOnly(boolean b) {
+    public void frndSetIdOnly(boolean b) {
         this.boolIdOnly = b;
     }
 
-    protected void frndSetRecord(Element n) {
+    public void frndSetRecord(Element n) {
         this.xmlRecord = n;
     }
 
-    protected void frndSetStatus(String s) {
+    public void frndSetStatus(String s) {
         this.strStatus = s;
     }
 }

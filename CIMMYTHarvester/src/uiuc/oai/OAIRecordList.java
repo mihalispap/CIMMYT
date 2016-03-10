@@ -123,12 +123,12 @@ public class OAIRecordList {
         this.priSetCurrentItem();
     }
 
-    protected void frndSetOAIResumptionStream(OAIResumptionStream rs) throws OAIException {
+    public void frndSetOAIResumptionStream(OAIResumptionStream rs) throws OAIException {
         this.oaiResume = rs;
         this.priSetCurrentItem();
     }
 
-    protected void frndSetMetadataPrefix(String meta) {
+    public void frndSetMetadataPrefix(String meta) {
         this.strMetadataPrefix = meta;
     }
 }

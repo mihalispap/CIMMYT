@@ -6,7 +6,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-
+import gr.agroknow.cimmyt.CimmytRecord;
+import gr.agroknow.cimmyt.CimmytRecordList;
+import gr.agroknow.cimmyt.CimmytRepository;
 import gr.agroknow.metadata.harvester.Record;
 import org.ariadne.util.IOUtilsv2;
 import org.ariadne.util.JDomUtils;
@@ -53,45 +55,43 @@ public class HarvestSet{
 
 
 
-		OAIRepository repos = new OAIRepository();
+		CimmytRepository repos = new CimmytRepository();
 		File file = new File(folderName);
                 String identifier = "";
 		file.mkdirs();
 
-                
+		repos.setBaseURL(target);
+		CimmytRecordList records;
 
-              repos.setBaseURL(target);
- 
-              OAIRecordList records;
-
-		//OAIRecordList records = repos.listRecords("ese","9999-12-31","2000-12-31","");
-             
-              /*if (setSpec=="")
-               records = repos.listRecords(metadataPrefix,"9999-12-31","2000-12-31");              
-              else 
-               records = repos.listRecords(metadataPrefix,"9999-12-31","2000-12-31",setSpec);   
-				*/
-              records = repos.listAllRecords(metadataPrefix,setSpec);
-               int counter = 0;
+		records = repos.listAllRecords(metadataPrefix,setSpec);
+        int counter = 0;
 		//		records.moveNext();
 		while (records.moreItems()) {
 			counter++;
-			OAIRecord item = records.getCurrentItem();
+			CimmytRecord item = records.getCurrentItem();
 
+			//item.getMetadata();
 			/*get the lom metadata : item.getMetadata();
 			 * this return a Node which contains the lom metadata.
 			 */
+			
+			//System.out.println("Here1?");
 			if(!item.deleted()) {
+				//System.out.println("Here2?");
 				Element metadata = item.getMetadata();
+				//System.out.println("Here3?");
 				if(metadata != null) {
-					System.out.println(item.getIdentifier());
+					//System.out.println(item.getIdentifier());
 					Record rec = new Record();
 					rec.setOaiRecord(item);
+					//System.out.println("Here4?");
 					rec.setMetadata(item.getMetadata());
+					//System.out.println("Here5?");
 					rec.setOaiIdentifier(item.getIdentifier());
                                         identifier = item.getIdentifier().replaceAll(":", "_");
                                         identifier = identifier.replaceAll("/",".");
-					IOUtilsv2.writeStringToFileInEncodingUTF8(OaiUtils.parseLom2Xmlstring(metadata), folderName + "/" + identifier +".xml");
+					IOUtilsv2.writeStringToFileInEncodingUTF8(OaiUtils.parseLom2Xmlstring(metadata), 
+							folderName + "/" + identifier +".xml");
 
 				}
 				else {

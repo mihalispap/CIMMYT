@@ -57,7 +57,7 @@ import uiuc.oai.OaiUtil;
 public class OAIRepository {
     private String strRepositoryId;
     private String strRepositoryName;
-    private String strBaseURL = "";
+    protected String strBaseURL = "";
     private String[] strAdminEmail;
     private String[] strCompression;
     private String strEarliestDatestamp;
@@ -439,7 +439,7 @@ public class OAIRepository {
         return this.namespaces;
     }
 
-    private String priBuildParamString(String u, String f, String s, String i, String m) {
+    protected String priBuildParamString(String u, String f, String s, String i, String m) {
         String param = "";
         if (u != null && u.length() > 0) {
             param = param + "&until=" + u;
@@ -459,7 +459,7 @@ public class OAIRepository {
         return param;
     }
 
-    private void priCheckBaseURL() throws OAIException {
+    protected void priCheckBaseURL() throws OAIException {
         if (this.strBaseURL == null || this.strBaseURL.length() == 0) {
             throw new OAIException(6, "No BaseURL");
         }

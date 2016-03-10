@@ -55,7 +55,10 @@ public class HarvestManager {
 		
 		DBHandler db;
 
-		String conf_file=folderName + "/" + "cimmyt.conf";
+		String filename_builder=target.replace("http://", "");
+		filename_builder=filename_builder.replace('/', '_');
+		
+		String conf_file=folderName + "/" + filename_builder + "_" + "cimmyt.conf";
 		db=new DBHandler(conf_file);
 		
 		int counter = 0;
