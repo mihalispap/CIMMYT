@@ -157,7 +157,8 @@ public class CimmytRecord extends OAIRecord  {
                         	
                         	//sample: Citation: Vargas, Mateo; Combs, Emily; [...]
                         	//resource_tag.detach();
-                        	descr=descr.replace("Citation: ","");  
+                        	//descr=descr.replace("Citation: ","");  
+                        	resource_tag.setText(resource_tag.getText().replace("Citation: ",""));
                         	resource_tag.setName("citation");
                         	//ret.addContent(new Element("citation").setText(descr));
                         }
@@ -176,7 +177,7 @@ public class CimmytRecord extends OAIRecord  {
                         	Matcher matcher = pattern.matcher(relation);
                         	if (matcher.find())
                         	{
-                        	    System.out.println(matcher.group(0));
+                        	    //System.out.println(matcher.group(0));
                         	    String doi=matcher.group(0).replace("doi:","http://dx.doi.org/");
                         	    ret.addContent(new Element("doi").setText(doi));
                         	}                     	
@@ -191,12 +192,32 @@ public class CimmytRecord extends OAIRecord  {
                         	}
                         }
                         
-                                  		
+
+                        if(resource_tag.getName().equals("date"))
+                        {
+                        	if(resource_tag.getText().length()==4)
+                        	{
+                        		resource_tag.setName("pubDate");
+                        	}
+                        	else if(resource_tag.getText().length()==5 && resource_tag.getText().endsWith("."))
+                        	{
+                        		resource_tag.setText(resource_tag.getText().replace(".",""));
+                        		resource_tag.setName("pubDate");
+                        	}
+                        }
+                        
+                        if(resource_tag.getName().equals("subject"))
+                        {
+                        	resource_tag.setText(resource_tag.getText().replace("DESCRIPTORS:",""));
+                        	resource_tag.setName("subject");
+                        	
+                        }
+                           		
                      }
                      for(int i=0;i<sets.size();i++)
                     	 ret.addContent(new Element("set").setText(sets.get(i)));
                      
-                     System.out.println("----------\nFOR:"+urlV+"\n----------------------");
+                     //System.out.println("----------\nFOR:"+urlV+"\n----------------------");
             }
         }
         catch (JDOMException e) {
