@@ -81,6 +81,8 @@ public class CimmytRecord extends OAIRecord  {
                      String urlV="";
                      //System.out.println(resourceList.toString());
 
+                     boolean flag=false;
+                     String resource_title="empty";
                      for (int i = 0; i < resourceList.size(); i++) 
                      {    
                     	 
@@ -139,6 +141,10 @@ public class CimmytRecord extends OAIRecord  {
 
 	                        	ret.addContent(new Element("domainid").setText(domain_id));
 	                        	ret.addContent(new Element("cdocid").setText(doc_id));
+	                        	
+	                        	/*Important to check that ALL resources have this!*/
+	                        	ret.addContent(new Element("apiid").setText(domain_id+"_"+doc_id));
+	                        	flag=true;
                         	}
                         	catch(java.lang.ArrayIndexOutOfBoundsException e)
                         	{
@@ -212,11 +218,25 @@ public class CimmytRecord extends OAIRecord  {
                         	resource_tag.setName("subject");
                         	
                         }
+
+                        if(resource_tag.getName().equals("title"))
+                        {
+                        	resource_title=resource_tag.getText();
+                        	
+                        }
                            		
                      }
                      for(int i=0;i<sets.size();i++)
                     	 ret.addContent(new Element("set").setText(sets.get(i)));
-                     
+                     if(!flag)
+                     {
+                    	 //System.out.println("INPUTING MANUAL ID!!!");
+                    	 
+                    	 int hash=resource_title.hashCode();
+                    	 if(hash<0)
+                    		 hash*=-1;
+                    	 ret.addContent(new Element("apiid").setText(String.valueOf(hash)));
+                     }
                      //System.out.println("----------\nFOR:"+urlV+"\n----------------------");
             }
         }
