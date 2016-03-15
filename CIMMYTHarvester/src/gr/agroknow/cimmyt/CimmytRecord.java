@@ -201,7 +201,7 @@ public class CimmytRecord extends OAIRecord  {
 
                         if(resource_tag.getName().equals("date"))
                         {
-                        	if(resource_tag.getText().length()==4)
+                        	if(resource_tag.getText().length()<=10)
                         	{
                         		resource_tag.setName("pubDate");
                         	}
