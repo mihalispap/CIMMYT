@@ -247,7 +247,13 @@ public class CimmytRecord extends OAIRecord  {
                            		
                      }
                      for(int i=0;i<sets.size();i++)
-                    	 ret.addContent(new Element("set",dcns).setText(sets.get(i)));                     
+                     {
+                    	 ret.addContent(new Element("cset",dcns).setText(sets.get(i)));
+                    	 
+                    	 String setid=handler+sets.get(i);
+                    	 int id=setid.hashCode();
+                    	 ret.addContent(new Element("setid",dcns).setText(String.valueOf(id)));
+                     }
                      if(!flag)
                      {
                     	 //System.out.println("INPUTING MANUAL ID!!!");
@@ -260,17 +266,14 @@ public class CimmytRecord extends OAIRecord  {
                      }
                      ret.addContent(new Element("created_date",dcns).setText(datestamp));
                      
-                     
+                     ret.addContent(new Element("handler",dcns).setText(handler));
+                     /*
                      String json_string="{\"uri\":\""+apiid+"\",";
                      
                      String type="resource";
                      List<String> descrs=new ArrayList<String>();
                      List<String> langs=new ArrayList<String>();
-                     /*
-                      * 
-                      * TODO: think about something better..
-                      * 
-                      * */
+                     
                      if(handler.contains("data.cimmyt"))
                     	 type="dataset";
                      
@@ -324,13 +327,10 @@ public class CimmytRecord extends OAIRecord  {
                      }
                      
                      json_string+="}";
-                     json_string=json_string.replace(",}", "}");
-                     
-                     //json_string=org.codehaus.jettison.json.JSONObject.quote(json_string);
-                     
+                     json_string=json_string.replace(",}", "}");                     
                      IOUtilsv2.writeStringToFileInEncodingUTF8(json_string,folderName + "/" +apiid +".entity.json");
                      
-                     //System.out.println(json_string);
+                     */
             }
         }
         catch (JDOMException e) {
