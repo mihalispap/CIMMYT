@@ -82,13 +82,13 @@ public class HarvestAllDateProcess {
 			 */
 
 			if(!item.deleted()) {
-				Element metadata = item.getMetadata();
+				Element metadata = item.getMetadata(target,folderName);
 				if(metadata != null) {
 					//System.out.println(item.getIdentifier());
 					Record rec = new Record();
 					/*TODO: uncomment if needed!*/
 					rec.setOaiRecord(item);
-					rec.setMetadata(item.getMetadata());
+					rec.setMetadata(item.getMetadata(target,folderName));
 					rec.setOaiIdentifier(item.getIdentifier());
                                         identifier = item.getIdentifier().replaceAll(":", "_");
                                         identifier = identifier.replaceAll("/",".");

@@ -1,27 +1,36 @@
 package gr.agroknow.cimmyt;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.ariadne.util.IOUtilsv2;
+import org.ariadne.util.OaiUtils;
 import org.jdom.Attribute;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.Namespace;
+import org.jdom.output.XMLOutputter;
 
 import uiuc.oai.OAIException;
 import uiuc.oai.OAIRecord;
 import uiuc.oai.OaiUtil;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.XML;
+
+
 public class CimmytRecord extends OAIRecord  {
 
-	public Element getMetadata() throws OAIException {
+	public Element getMetadata(String handler, String folderName) throws OAIException, IOException {
         Element ret = null;
         
-        //System.out.println("I got in here!");
+        System.out.println("HARVESTING:"+handler);
         
         this.priCheckIdOnly();
         try {
@@ -33,6 +42,9 @@ public class CimmytRecord extends OAIRecord  {
             nsVector.add(oains);
             nsVector.add(dcns);
             nsVector.add(oaidcns);
+            
+            String datestamp="";
+            String apiid="";
             
             //System.out.println(this.xmlRecord);
 
@@ -54,6 +66,12 @@ public class CimmytRecord extends OAIRecord  {
             		if(resource_tag.getName().equals("setSpec"))
                     {
             			sets.add(resource_tag.getText());
+            			//System.out.println("HAVE SET");
+                    }
+
+            		if(resource_tag.getName().equals("datestamp"))
+                    {
+            			datestamp=resource_tag.getText();
             			//System.out.println("HAVE SET");
                     }
 
@@ -139,11 +157,13 @@ public class CimmytRecord extends OAIRecord  {
 	                        	String domain_id=url_array[1];
 	                        	String doc_id=url_array[2];
 
-	                        	ret.addContent(new Element("domainid").setText(domain_id));
-	                        	ret.addContent(new Element("cdocid").setText(doc_id));
+	                        	ret.addContent(new Element("domainid",dcns).setText(domain_id));
+	                        	ret.addContent(new Element("cdocid",dcns).setText(doc_id));
 	                        	
 	                        	/*Important to check that ALL resources have this!*/
-	                        	ret.addContent(new Element("apiid").setText(domain_id+"_"+doc_id));
+	                        	ret.addContent(new Element("apiid",dcns).setText(domain_id+"_"+doc_id));
+	                        	
+	                        	apiid=domain_id+"_"+doc_id;
 	                        	flag=true;
                         	}
                         	catch(java.lang.ArrayIndexOutOfBoundsException e)
@@ -185,7 +205,7 @@ public class CimmytRecord extends OAIRecord  {
                         	{
                         	    //System.out.println(matcher.group(0));
                         	    String doi=matcher.group(0).replace("doi:","http://dx.doi.org/");
-                        	    ret.addContent(new Element("doi").setText(doi));
+                        	    ret.addContent(new Element("doi",dcns).setText(doi));
                         	}                     	
                         	
                         }
@@ -227,7 +247,7 @@ public class CimmytRecord extends OAIRecord  {
                            		
                      }
                      for(int i=0;i<sets.size();i++)
-                    	 ret.addContent(new Element("set").setText(sets.get(i)));
+                    	 ret.addContent(new Element("set",dcns).setText(sets.get(i)));                     
                      if(!flag)
                      {
                     	 //System.out.println("INPUTING MANUAL ID!!!");
@@ -235,16 +255,87 @@ public class CimmytRecord extends OAIRecord  {
                     	 int hash=resource_title.hashCode();
                     	 if(hash<0)
                     		 hash*=-1;
-                    	 ret.addContent(new Element("apiid").setText(String.valueOf(hash)));
+                    	 ret.addContent(new Element("apiid",dcns).setText(String.valueOf(hash)));
+                    	 apiid=String.valueOf(hash);
                      }
-                     //System.out.println("----------\nFOR:"+urlV+"\n----------------------");
+                     ret.addContent(new Element("created_date",dcns).setText(datestamp));
+                     
+                     
+                     String json_string="{\"uri\":\""+apiid+"\",";
+                     
+                     String type="resource";
+                     List<String> descrs=new ArrayList<String>();
+                     List<String> langs=new ArrayList<String>();
+                     /*
+                      * 
+                      * TODO: think about something better..
+                      * 
+                      * */
+                     if(handler.contains("data.cimmyt"))
+                    	 type="dataset";
+                     
+                     json_string+="\"type\": \""+type+"\",";
+                     for (int i = 0; i < resourceList.size(); i++) 
+                     {
+                    	 Element resource_tag = resourceList.get(i);
+
+                    	 if(resource_tag.getName().equals("title"))
+                    	 {
+                    		 json_string+="\"title\": "+org.codehaus.jettison.json.JSONObject.quote(resource_tag.getText())+",";
+                    	 }
+                    	 if(resource_tag.getName().equals("created_date"))
+                    	 {
+                    		 json_string+="\"created_date\": "+org.codehaus.jettison.json.JSONObject.quote(resource_tag.getText())+",";
+                    	 }
+                    	 if(resource_tag.getName().equals("description"))
+                    	 {
+                    		 descrs.add(resource_tag.getText());
+                    	 }
+                    	 if(resource_tag.getName().equals("language"))
+                    	 {
+                    		 langs.add(resource_tag.getText());
+                    	 }
+                     }
+
+                     if(descrs.size()>0)
+                     {
+                    	 json_string+="\"description\":[";
+                    	 for(int i=0;i<descrs.size();i++)
+                    	 {
+                    		 if(i!=descrs.size()-1)
+                    			 json_string+=""+org.codehaus.jettison.json.JSONObject.quote(descrs.get(i))+",";
+                    		 else
+                    			 json_string+=""+org.codehaus.jettison.json.JSONObject.quote(descrs.get(i))+"";
+                    	 }
+                    	 json_string+="],";
+                     }
+
+                     if(langs.size()>0)
+                     {
+                    	 json_string+="\"language\":[";
+                    	 for(int i=0;i<langs.size();i++)
+                    	 {
+                    		 if(i!=langs.size()-1)
+                    			 json_string+=""+org.codehaus.jettison.json.JSONObject.quote(langs.get(i))+",";
+                    		 else
+                    			 json_string+=""+org.codehaus.jettison.json.JSONObject.quote(langs.get(i))+"";
+                    	 }
+                    	 json_string+="],";
+                     }
+                     
+                     json_string+="}";
+                     json_string=json_string.replace(",}", "}");
+                     
+                     //json_string=org.codehaus.jettison.json.JSONObject.quote(json_string);
+                     
+                     IOUtilsv2.writeStringToFileInEncodingUTF8(json_string,folderName + "/" +apiid +".entity.json");
+                     
+                     //System.out.println(json_string);
             }
         }
         catch (JDOMException e) {
             throw new OAIException(14, e.getMessage());
         }
-        
-        
         
         return ret;
     }
