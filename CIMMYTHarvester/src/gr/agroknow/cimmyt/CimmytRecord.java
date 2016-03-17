@@ -1,6 +1,9 @@
 package gr.agroknow.cimmyt;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
@@ -106,10 +109,141 @@ public class CimmytRecord extends OAIRecord  {
                     	 
                     	
                         Element resource_tag = resourceList.get(i);
-                        //System.out.println("\nCurrent Element:" + resource_tag.getName());
-                        //String content=resource_tag.getText();
-                		//System.out.println("I:"+i+", name:"+resource_tag.getName()
-                		//		+", text:"+resource_tag.getText());
+
+                        /*
+                         * Country tagging
+                         * 
+                         * */
+                        
+                		if(resource_tag.getName().equals("subject")
+                				|| resource_tag.getName().equals("description"))
+                		{
+                			String[] value=resource_tag.getText().split(" ");
+                			
+                			String absolute_path=System.getProperty("user.dir")+System.getProperty("file.separator")+""
+            						+ "assets"+System.getProperty("file.separator");
+                			
+                			/*
+                			 * 	TODO: 
+                			 * 		rethink about case sensitive/insensitive
+                			 * 
+                			 * */
+                			for(int j=0;j<value.length;j++)
+                			{
+                				value[j]=value[j].replace(",", "");
+                				value[j]=value[j].replace("(", "");
+                				value[j]=value[j].replace(")", "");
+                				
+                				FileInputStream fstream = new FileInputStream(absolute_path+"continents.db");
+                				BufferedReader br = new BufferedReader(new InputStreamReader(fstream));
+
+                				String strLine;
+                				while ((strLine = br.readLine()) != null)   
+                				{
+
+                					String[] geonames=strLine.split("\t");
+                				  
+	                				boolean found=false;
+	                				String geonames_id="";
+
+	                				if(value[j].equals(geonames[1]))
+	                				{
+	                						found=true;
+	                						geonames_id=geonames[2];
+	                				}
+	                				if(found)
+	                				{
+	                					if(resource_tag.getName().equals("description") || value.length>1)
+	                						ret.addContent(new Element("geotag",dcns).setText(value[j]));
+	                					else
+	                						resource_tag.setName("geotag");
+	                					ret.addContent(new Element("geonames",dcns).setText(
+	                							"http://sws.geonames.org/"+geonames_id+"/about.rdf"));
+	                					break;
+	                				}
+                				}
+                				br.close();
+                				
+                				fstream = new FileInputStream(absolute_path+"countries.db");
+                				br = new BufferedReader(new InputStreamReader(fstream));
+                				while ((strLine = br.readLine()) != null)   
+                				{
+
+                					String[] geonames=strLine.split("\t");
+                				  
+	                				boolean found=false;
+	                				String geonames_id="";
+	                				
+	                				if(value[j].equals(geonames[4]))
+	                				{
+	                						found=true;
+	                						geonames_id=geonames[16];
+	                				}
+	                				if(found)
+	                				{
+	                					if(resource_tag.getName().equals("description") || value.length>1)
+	                						ret.addContent(new Element("geotag",dcns).setText(value[j]));
+	                					else
+	                						resource_tag.setName("geotag");
+	                					ret.addContent(new Element("geonames",dcns).setText(
+	                							"http://sws.geonames.org/"+geonames_id+"/about.rdf"));
+	                					break;
+	                				}
+                				}
+                				br.close();
+                				
+                			}
+                			
+                		}
+                        
+                		
+                		/*
+                		 * 
+                		 * Language enrichment
+                		 * 
+                		 * */
+                		if(resource_tag.getName().equals("language"))
+                		{
+                			String value=resource_tag.getText();
+                			
+                			String absolute_path=System.getProperty("user.dir")+System.getProperty("file.separator")+""
+            						+ "assets"+System.getProperty("file.separator");
+                			
+                			/*
+                			 * 	TODO: 
+                			 * 		rethink about case sensitive/insensitive
+                			 * 
+                			 * */
+                			
+                				FileInputStream fstream = new FileInputStream(absolute_path+"iso-languagecodes.db");
+                				BufferedReader br = new BufferedReader(new InputStreamReader(fstream));
+
+                				String strLine;
+                				while ((strLine = br.readLine()) != null)   
+                				{
+
+                					String[] langs=strLine.split("\t");
+                				  
+	                				boolean found=false;
+
+	                				if(value.equals(langs[3]))
+	                				{
+	                						found=true;
+	                				}
+	                				if(found)
+	                				{
+	                					resource_tag.setText(langs[0]);
+	                					ret.addContent(new Element("lexvo",dcns).setText(
+	                							"http://lexvo.org/id/iso639-3/"+langs[0]));
+	                					break;
+	                				}
+                				}
+                				br.close();
+                        				
+                			
+                			
+                		}
+                		
                 		
                         if(resource_tag.getName().equals("identifier"))
                         {

@@ -108,7 +108,7 @@ public class OAIRecord {
 
     public Element getMetadata() throws OAIException {
     	
-    	System.out.println("I got in here2!");
+    	//System.out.println("I got in here2!");
     	
         Element ret = null;
         this.priCheckIdOnly();
