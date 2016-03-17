@@ -30,7 +30,7 @@ public class CimmytRecord extends OAIRecord  {
 	public Element getMetadata(String handler, String folderName) throws OAIException, IOException {
         Element ret = null;
         
-        System.out.println("HARVESTING:"+handler);
+        //System.out.println("HARVESTING:"+handler);
         
         this.priCheckIdOnly();
         try {
@@ -225,7 +225,8 @@ public class CimmytRecord extends OAIRecord  {
                         	{
                         		resource_tag.setName("pubDate");
                         	}
-                        	else if(resource_tag.getText().length()==5 && resource_tag.getText().endsWith("."))
+
+                        	if(resource_tag.getText().length()==5 && resource_tag.getText().endsWith("."))
                         	{
                         		resource_tag.setText(resource_tag.getText().replace(".",""));
                         		resource_tag.setName("pubDate");
@@ -244,6 +245,23 @@ public class CimmytRecord extends OAIRecord  {
                         	resource_title=resource_tag.getText();
                         	
                         }
+                        
+                        if(resource_tag.getName().equals("format"))
+                        {
+                        	if(resource_tag.getText().contains("dpi"))
+                        	{
+                        		resource_tag.setName("quality");
+                        	}
+                        	if(resource_tag.getText().contains("Quality"))
+                        	{
+                        		resource_tag.setName("quality");
+                        	}
+                        	if(resource_tag.getText().contains("fps"))
+                        	{
+                        		resource_tag.setName("quality");
+                        	}
+                        }
+                        
                            		
                      }
                      for(int i=0;i<sets.size();i++)
@@ -252,6 +270,8 @@ public class CimmytRecord extends OAIRecord  {
                     	 
                     	 String setid=handler+sets.get(i);
                     	 int id=setid.hashCode();
+                    	 if(id<0)
+                    		 id*=-1;
                     	 ret.addContent(new Element("setid",dcns).setText(String.valueOf(id)));
                      }
                      if(!flag)
