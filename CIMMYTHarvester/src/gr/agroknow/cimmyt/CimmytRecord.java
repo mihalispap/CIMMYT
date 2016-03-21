@@ -146,19 +146,19 @@ public class CimmytRecord extends OAIRecord  {
 	                				boolean found=false;
 	                				String geonames_id="";
 
-	                				if(value[j].equals(geonames[1]))
+	                				if(value[j].equalsIgnoreCase(geonames[1]))
 	                				{
 	                						found=true;
 	                						geonames_id=geonames[2];
 	                				}
 	                				if(found)
 	                				{
-	                					if(resource_tag.getName().equals("description") || value.length>1)
+	                					//if(resource_tag.getName().equals("description") || value.length>1)
 	                						ret.addContent(new Element("geotag",dcns).setText(value[j]));
-	                					else
-	                						resource_tag.setName("geotag");
+	                					//else
+	                					//	resource_tag.setName("geotag");
 	                					ret.addContent(new Element("geonames",dcns).setText(
-	                							"http://sws.geonames.org/"+geonames_id+"/about.rdf"));
+	                							"http://sws.geonames.org/"+geonames_id));
 	                					break;
 	                				}
                 				}
@@ -174,19 +174,19 @@ public class CimmytRecord extends OAIRecord  {
 	                				boolean found=false;
 	                				String geonames_id="";
 	                				
-	                				if(value[j].equals(geonames[4]))
+	                				if(value[j].equalsIgnoreCase(geonames[4]))
 	                				{
 	                						found=true;
 	                						geonames_id=geonames[16];
 	                				}
 	                				if(found)
 	                				{
-	                					if(resource_tag.getName().equals("description") || value.length>1)
+	                					//if(resource_tag.getName().equals("description") || value.length>1)
 	                						ret.addContent(new Element("geotag",dcns).setText(value[j]));
-	                					else
-	                						resource_tag.setName("geotag");
+	                					//else
+	                					//	resource_tag.setName("geotag");
 	                					ret.addContent(new Element("geonames",dcns).setText(
-	                							"http://sws.geonames.org/"+geonames_id+"/about.rdf"));
+	                							"http://sws.geonames.org/"+geonames_id));
 	                					break;
 	                				}
                 				}
@@ -418,7 +418,7 @@ public class CimmytRecord extends OAIRecord  {
                     	 ret.addContent(new Element("apiid",dcns).setText(String.valueOf(hash)));
                     	 apiid=String.valueOf(hash);
                      }
-                     ret.addContent(new Element("created_date",dcns).setText(datestamp));
+                     ret.addContent(new Element("updated_date",dcns).setText(datestamp));
                      
                      ret.addContent(new Element("handler",dcns).setText(handler));
                      /*
