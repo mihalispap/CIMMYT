@@ -116,7 +116,8 @@ public class CimmytRecord extends OAIRecord  {
                          * */
                         
                 		if(resource_tag.getName().equals("subject")
-                				|| resource_tag.getName().equals("description"))
+                				|| resource_tag.getName().equals("description")
+                				|| resource_tag.getName().equals("title"))
                 		{
                 			String[] value=resource_tag.getText().split(" ");
                 			
