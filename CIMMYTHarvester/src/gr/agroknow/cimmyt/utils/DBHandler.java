@@ -18,6 +18,7 @@ import org.jdom.JDOMException;
 
 import gr.agroknow.cimmyt.CimmytSet;
 import gr.agroknow.metadata.harvester.HarvestAllDateProcess;
+import gr.agroknow.metadata.harvester.HarvestAllProcess;
 import gr.agroknow.metadata.harvester.HarvestSet;
 import uiuc.oai.OAIException;
 
@@ -129,6 +130,23 @@ public class DBHandler {
 		args[1]=folderName;
 		args[2]=metadataPrefix; 
 		
+		if(target.contains("data.cimmyt"))
+		{
+			HarvestAllProcess harvest_all=new HarvestAllProcess();
+			try {
+				harvest_all.run(args);
+			} catch (OAIException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (JDOMException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
 		/*
 		 * TODO: 
 		 * 	try to catch long waits
@@ -148,6 +166,9 @@ public class DBHandler {
 		for(int i=0;i<sets.size();i++)
 		{
 			args[4]=sets.get(i).getLastIndexed();
+			
+			
+			
 			args[3]=until;//"2012-01-01";	//TODO: change until yesterday!
 			args[5]=sets.get(i).getSetSpec();
 			try {
@@ -156,6 +177,7 @@ public class DBHandler {
 				/*TODO: to think about it..*/
 				if(norecords!=0)
 					sets.get(i).setLastIndexed(until);
+
 			} catch (OAIException | IOException | JDOMException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

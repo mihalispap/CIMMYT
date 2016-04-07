@@ -29,7 +29,8 @@ public class HarvestAllDateProcess {
            
            if (args.length != 6) {
                 System.err.println("Usage3: java HarvestProcess param1(target) param2(foldername) param3(metadataPrefix) param4(untilD) param5(fromD) param6(Set)");
-                System.exit(1);
+                //System.exit(1);
+                return -1;
             }          
            return listRecords(args[0],args[1],args[2], args[3], args[4], args[5]);           
         /*
