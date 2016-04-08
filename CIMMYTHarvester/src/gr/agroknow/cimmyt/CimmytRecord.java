@@ -77,6 +77,15 @@ public class CimmytRecord extends OAIRecord  {
             			datestamp=resource_tag.getText();
             			//System.out.println("HAVE SET");
                     }
+            		
+            		if(resource_tag.getName().equals("identifier"))
+                    {
+            			//Sample: oai:repository.cimmyt.org:10883/1064
+            			String[] values=resource_tag.getText().split("/");
+				        String[] domain=values[0].split(":");
+				        
+				        apiid=domain[2]+"_"+values[1];
+                    }
 
             	}
             	//System.out.println(".........");
@@ -255,7 +264,7 @@ public class CimmytRecord extends OAIRecord  {
                         		String content=resource_tag.getText();
                         		
                             	//System.out.println("Content:"+content+"|SIZE:"+content.length());
-                            	if(content.length()==13)
+                            	if(content.length()>=13)
                             	{
                             		//sample: 968-6923-44-6
                             		//resource_tag.detach();    
@@ -416,8 +425,16 @@ public class CimmytRecord extends OAIRecord  {
                     	 int hash=resource_title.hashCode();
                     	 if(hash<0)
                     		 hash*=-1;
-                    	 ret.addContent(new Element("apiid",dcns).setText(String.valueOf(hash)));
-                    	 apiid=String.valueOf(hash);
+                    	 //ret.addContent(new Element("apiid",dcns).setText(String.valueOf(hash)));
+                    	 ret.addContent(new Element("apiid",dcns).setText(apiid));
+                    	 
+                    	 String[] ddid=apiid.split("_");
+                    
+                     	 ret.addContent(new Element("domainid",dcns).setText(ddid[0]));
+                     	 ret.addContent(new Element("cdocid",dcns).setText(ddid[1]));
+                     	
+                    	 
+                    	 //apiid=String.valueOf(hash);
                      }
                      ret.addContent(new Element("updated_date",dcns).setText(datestamp));
                      
