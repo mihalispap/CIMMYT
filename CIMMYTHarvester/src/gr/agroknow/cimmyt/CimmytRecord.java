@@ -53,6 +53,10 @@ public class CimmytRecord extends OAIRecord  {
 
             List<String> sets=new ArrayList<String>();
             Element node_t = OaiUtil.getXpathNode("//oai:header/.", nsVector, this.xmlRecord);
+            
+            node_t = OaiUtil.getXpathNode("oai:header/*", nsVector, this.xmlRecord);
+            
+            
             if (node_t != null) 
             {
             	//System.out.println(node_t.getText());
@@ -66,6 +70,9 @@ public class CimmytRecord extends OAIRecord  {
             	for(int i=0;i<resourceList.size();i++)
             	{
             		Element resource_tag = resourceList.get(i);
+            		
+            		//System.out.println(i+")"+resource_tag.getName()+":"+resource_tag.getText());
+            		
             		if(resource_tag.getName().equals("setSpec"))
                     {
             			sets.add(resource_tag.getText());
@@ -80,11 +87,32 @@ public class CimmytRecord extends OAIRecord  {
             		
             		if(resource_tag.getName().equals("identifier"))
                     {
-            			//Sample: oai:repository.cimmyt.org:10883/1064
-            			String[] values=resource_tag.getText().split("/");
-				        String[] domain=values[0].split(":");
-				        
-				        apiid=domain[2]+"_"+values[1];
+            			if(resource_tag.getText().contains("oai:repository.cimmyt.org"))
+            			{
+	            			//Sample: oai:repository.cimmyt.org:10883/1064
+	            			String[] values=resource_tag.getText().split("/");
+					        String[] domain=values[0].split(":");
+					        
+					        apiid=domain[2]+"_"+values[1];
+            			}
+            			else if(resource_tag.getText().contains("hdl:"))
+            			{
+            				//System.out.println("Should see this if dvn, "+resource_tag.getText()+"\ndatestamp:"+datestamp+"\n---");
+            				//Sample: hdl:11529/10007
+            				String[] values=resource_tag.getText().split("/");
+					        String[] domain=values[0].split(":");
+					        
+					        apiid=domain[1]+"_"+values[1];
+            			}
+            			else if(resource_tag.getText().contains("koha-oai-cimmyt"))
+            			{
+            				//System.out.println("Should see this, "+resource_tag.getText()+"\ndatestamp:"+datestamp+"\n---");
+            				//Sample: koha-oai-cimmyt:2 hdl:11529/10007
+            				String[] values=resource_tag.getText().split(":");
+					        String domain=String.valueOf(values[0].hashCode());
+					        
+					        apiid=domain+"_"+values[1];
+            			}
                     }
 
             	}
@@ -236,7 +264,7 @@ public class CimmytRecord extends OAIRecord  {
                 				  
 	                				boolean found=false;
 
-	                				if(value.equals(langs[3]))
+	                				if(value.equals(langs[3]) || value.equals(langs[2]))
 	                				{
 	                						found=true;
 	                				}
@@ -261,7 +289,11 @@ public class CimmytRecord extends OAIRecord  {
                         	
                         	if(!resource_tag.getText().contains("http://"))
                         	{
+                        		
                         		String content=resource_tag.getText();
+                        		content=content.replace("URN:ISBN:", "");
+                        		content=content.replace("(Print)", "");
+                        		content=content.replace("(Online)", "");
                         		
                             	//System.out.println("Content:"+content+"|SIZE:"+content.length());
                             	if(content.length()>=13)
@@ -269,6 +301,7 @@ public class CimmytRecord extends OAIRecord  {
                             		//sample: 968-6923-44-6
                             		//resource_tag.detach();    
                             		resource_tag.setName("isbn");
+                            		resource_tag.setText(content);
                                 	//ret.addContent(new Element("isbn").setText(content));
                             	}
                             	if(content.length()==9)
@@ -276,6 +309,7 @@ public class CimmytRecord extends OAIRecord  {
                             		//sample: 0188-2465
                             		//resource_tag.detach();
                             		resource_tag.setName("issn");
+                            		resource_tag.setText(content);
                                 	//ret.addContent(new Element("issn").setText(content));
                             	}
                             	continue;
@@ -307,6 +341,8 @@ public class CimmytRecord extends OAIRecord  {
 	                        	/*Important to check that ALL resources have this!*/
 	                        	ret.addContent(new Element("apiid",dcns).setText(domain_id+"_"+doc_id));
 	                        	
+	                        	System.out.println("From here..1");
+	                        	
 	                        	apiid=domain_id+"_"+doc_id;
 	                        	flag=true;
                         	}
@@ -333,13 +369,51 @@ public class CimmytRecord extends OAIRecord  {
                         	//ret.addContent(new Element("citation").setText(descr));
                         }
                         
+                        if(resource_tag.getName().equals("doi"))
+                        {
+                        	String relation=resource_tag.getText();
+                        	
+                        	relation=relation.replace("doi : ", "doi:");
+                        	
+                        	//System.out.println("FOUND!");
+                        	
+                        	if(!relation.contains("doi:"))
+                        		continue;
+
+                        	//sample: doi:10.2134/agronj2012.0016
+                        	//TOMAKE: http://dx.doi.org/10.2134/agronj2012.0016
+                        	
+                        	Pattern pattern = Pattern.compile("doi:(.*?) ");
+                        	Matcher matcher = pattern.matcher(relation);
+                        	if (matcher.find())
+                        	{
+                        	    //System.out.println(matcher.group(0));
+                        	    String doi=matcher.group(0).replace("doi:","http://dx.doi.org/");
+                        	    ret.addContent(new Element("doi",dcns).setText(doi));
+                        	}
+                        	else
+                        	{
+                        		//System.out.println("Going to check against:"+relation+"|");
+                        		pattern = Pattern.compile("doi:(.*?)");
+                        		matcher = pattern.matcher(relation);
+                        		if (matcher.find())
+                            	{
+                            	    //System.out.println("Got in!");
+                            	    String doi=matcher.group(0).replace("doi:","http://dx.doi.org/");
+                            	    ret.setText(doi);
+                            	}
+                        	}
+                        	
+                        }
                         if(resource_tag.getName().equals("relation"))
                         {
                         	String relation=resource_tag.getText();
                         	
+                        	relation=relation.replace("doi : ", "doi:");
+                        	
                         	if(!relation.contains("doi:"))
                         		continue;
-                        	
+
                         	//sample: doi:10.2134/agronj2012.0016
                         	//TOMAKE: http://dx.doi.org/10.2134/agronj2012.0016
                         	
@@ -428,11 +502,15 @@ public class CimmytRecord extends OAIRecord  {
                     	 //ret.addContent(new Element("apiid",dcns).setText(String.valueOf(hash)));
                     	 ret.addContent(new Element("apiid",dcns).setText(apiid));
                     	 
+                    	 if(true)
+                    		 return;
+                    	 
                     	 String[] ddid=apiid.split("_");
                     
                      	 ret.addContent(new Element("domainid",dcns).setText(ddid[0]));
                      	 ret.addContent(new Element("cdocid",dcns).setText(ddid[1]));
                      	
+                     	System.out.println("From here..2");
                     	 
                     	 //apiid=String.valueOf(hash);
                      }

@@ -29,6 +29,7 @@ public class HarvestManager {
         
         //"http://data.cimmyt.org/dvn/OAIHandler" C:\Users\Mihalis\Desktop\testsets\  "oai_dc"
         //"http://repository.cimmyt.org/oai/request" C:\Users\Mihalis\Desktop\testsets2\  "oai_dc"
+        //"http://knowledgecenter.cimmyt.org/cgi-bin/koha/oai.pl" C:\Users\Mihalis\Desktop\testsets3\ "oai_dc"
         
        listRecords(args[0],args[1],args[2]);           
               
@@ -73,8 +74,15 @@ public class HarvestManager {
 			 * 	in an if here?
 			 * 
 			 * */
-			
-			String set_name=item.getSetName().toString();
+			String set_name;
+			try
+			{
+				set_name=item.getSetName().toString();
+			}
+			catch(java.lang.NullPointerException e)
+			{
+				break;
+			}
 			String set_spec=item.getSetSpec().toString();
 			
 			CimmytSet current_set=new CimmytSet();
