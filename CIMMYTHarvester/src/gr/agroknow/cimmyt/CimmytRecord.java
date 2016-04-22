@@ -54,7 +54,7 @@ public class CimmytRecord extends OAIRecord  {
             List<String> sets=new ArrayList<String>();
             Element node_t = OaiUtil.getXpathNode("//oai:header/.", nsVector, this.xmlRecord);
             
-            node_t = OaiUtil.getXpathNode("oai:header/*", nsVector, this.xmlRecord);
+            //node_t = OaiUtil.getXpathNode("oai:header/*", nsVector, this.xmlRecord);
             
             
             if (node_t != null) 
@@ -106,12 +106,15 @@ public class CimmytRecord extends OAIRecord  {
             			}
             			else if(resource_tag.getText().contains("koha-oai-cimmyt"))
             			{
-            				//System.out.println("Should see this, "+resource_tag.getText()+"\ndatestamp:"+datestamp+"\n---");
+            				System.out.println("Should see this if knowledge, "+resource_tag.getText()+"\ndatestamp:"+datestamp+"\n---");
             				//Sample: koha-oai-cimmyt:2 hdl:11529/10007
             				String[] values=resource_tag.getText().split(":");
 					        String domain=String.valueOf(values[0].hashCode());
 					        
-					        apiid=domain+"_"+values[1];
+					        domain="koha-oai-cimmyt";
+					        
+					        apiid=String.valueOf(domain.hashCode());//+"_"+values[1];
+					        System.out.println("APPID:"+apiid);
             			}
                     }
 
@@ -500,17 +503,28 @@ public class CimmytRecord extends OAIRecord  {
                     	 if(hash<0)
                     		 hash*=-1;
                     	 //ret.addContent(new Element("apiid",dcns).setText(String.valueOf(hash)));
-                    	 ret.addContent(new Element("apiid",dcns).setText(apiid));
                     	 
-                    	 if(true)
-                    		 return;
                     	 
-                    	 String[] ddid=apiid.split("_");
-                    
-                     	 ret.addContent(new Element("domainid",dcns).setText(ddid[0]));
-                     	 ret.addContent(new Element("cdocid",dcns).setText(ddid[1]));
-                     	
-                     	System.out.println("From here..2");
+                    	 //if(true)
+                    	//	 return ret;
+                    	 
+                    	 //TODO: check BELOW jump....
+                    	 
+                    	 ret.addContent(new Element("apiid",dcns).setText(String.valueOf(hash)));
+                    	 
+                    	 if(handler.contains("knowledge"))
+                    		 ret.addContent(new Element("domainid",dcns).setText("706878023"));
+                    	 ret.addContent(new Element("cdocid",dcns).setText(String.valueOf(hash)));
+                    	 
+                    	 if(1==0)
+                    	 {                 
+                    		 ret.addContent(new Element("apiid",dcns).setText(apiid));
+	                    	 String[] ddid=apiid.split("_");
+	                    
+	                     	 ret.addContent(new Element("domainid",dcns).setText(ddid[0]));
+	                     	 ret.addContent(new Element("cdocid",dcns).setText(ddid[1]));
+                    	 }
+                     	//System.out.println("From here..2");
                     	 
                     	 //apiid=String.valueOf(hash);
                      }
