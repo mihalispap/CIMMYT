@@ -130,7 +130,7 @@ public class DBHandler {
 		args[1]=folderName;
 		args[2]=metadataPrefix; 
 		
-		if(target.contains("data.cimmyt"))// || target.contains("knowledgecenter.cimmyt"))
+		if(target.contains("data.cimmyt") || target.contains("knowledgecenter.cimmyt"))
 		{
 			HarvestAllProcess harvest_all=new HarvestAllProcess();
 			try {
@@ -172,8 +172,8 @@ public class DBHandler {
 			args[3]=until;//"2012-01-01";	//TODO: change until yesterday!
 			args[5]=sets.get(i).getSetSpec();
 			
-			args[5]="2";
-			args[4]="2016-04-17";
+			//args[5]="2";
+			//args[4]="2016-04-17";
 			
 			try {
 				int norecords=harvest_set.run(args);

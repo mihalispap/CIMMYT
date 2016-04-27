@@ -106,7 +106,7 @@ public class CimmytRecord extends OAIRecord  {
             			}
             			else if(resource_tag.getText().contains("koha-oai-cimmyt"))
             			{
-            				System.out.println("Should see this if knowledge, "+resource_tag.getText()+"\ndatestamp:"+datestamp+"\n---");
+            				//System.out.println("Should see this if knowledge, "+resource_tag.getText()+"\ndatestamp:"+datestamp+"\n---");
             				//Sample: koha-oai-cimmyt:2 hdl:11529/10007
             				String[] values=resource_tag.getText().split(":");
 					        String domain=String.valueOf(values[0].hashCode());
@@ -267,7 +267,7 @@ public class CimmytRecord extends OAIRecord  {
                 				  
 	                				boolean found=false;
 
-	                				if(value.equals(langs[3]) || value.equals(langs[2]))
+	                				if(value.equalsIgnoreCase(langs[3]) || value.equalsIgnoreCase(langs[2]))
 	                				{
 	                						found=true;
 	                				}
@@ -297,6 +297,9 @@ public class CimmytRecord extends OAIRecord  {
                         		content=content.replace("URN:ISBN:", "");
                         		content=content.replace("(Print)", "");
                         		content=content.replace("(Online)", "");
+                        		content=content.replace("ISSN:", "");
+                        		content=content.replace("(Revista en electrónico)", "");
+                        		content=content.replace(" ", "");
                         		
                             	//System.out.println("Content:"+content+"|SIZE:"+content.length());
                             	if(content.length()>=13)
@@ -378,11 +381,19 @@ public class CimmytRecord extends OAIRecord  {
                         	
                         	relation=relation.replace("doi : ", "doi:");
                         	
-                        	//System.out.println("FOUND!");
+                        	//System.out.println("FOUND!"+relation);
                         	
-                        	if(!relation.contains("doi:"))
+                        	if((!relation.contains("doi:") && !handler.contains("knowledgecenter")) || relation.isEmpty())
                         		continue;
-
+                        	if(!relation.contains("doi:") && handler.contains("knowledgecenter"))
+                        	{
+                        		//relation="doi:"+relation;
+                        		resource_tag.setText("http://dx.doi.org/"+relation);
+                        		continue;
+                        	}
+                        	
+                        	//System.out.println("FOUND2!");
+                        	
                         	//sample: doi:10.2134/agronj2012.0016
                         	//TOMAKE: http://dx.doi.org/10.2134/agronj2012.0016
                         	
@@ -391,6 +402,7 @@ public class CimmytRecord extends OAIRecord  {
                         	if (matcher.find())
                         	{
                         	    //System.out.println(matcher.group(0));
+                        		System.out.println("Got in2!");
                         	    String doi=matcher.group(0).replace("doi:","http://dx.doi.org/");
                         	    ret.addContent(new Element("doi",dcns).setText(doi));
                         	}
@@ -401,9 +413,9 @@ public class CimmytRecord extends OAIRecord  {
                         		matcher = pattern.matcher(relation);
                         		if (matcher.find())
                             	{
-                            	    //System.out.println("Got in!");
+                            	    System.out.println("Got in!");
                             	    String doi=matcher.group(0).replace("doi:","http://dx.doi.org/");
-                            	    ret.setText(doi);
+                            	    resource_tag.setText(doi);
                             	}
                         	}
                         	
