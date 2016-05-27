@@ -27,6 +27,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.XML;
 
+import gr.agroknow.cimmyt.utils.GetConfig;
+
 
 public class CimmytRecord extends OAIRecord  {
 
@@ -159,82 +161,95 @@ public class CimmytRecord extends OAIRecord  {
                 				|| resource_tag.getName().equals("description")
                 				|| resource_tag.getName().equals("title"))
                 		{
-                			String[] value=resource_tag.getText().split(" ");
                 			
-                			String absolute_path=System.getProperty("user.dir")+System.getProperty("file.separator")+""
-            						+ "assets"+System.getProperty("file.separator");
-                			
-                			/*
-                			 * 	TODO: 
-                			 * 		rethink about case sensitive/insensitive
-                			 * 
-                			 * */
-                			for(int j=0;j<value.length;j++)
-                			{
-                				value[j]=value[j].replace(",", "");
-                				value[j]=value[j].replace("(", "");
-                				value[j]=value[j].replace(")", "");
-                				
-                				FileInputStream fstream = new FileInputStream(absolute_path+"continents.db");
-                				BufferedReader br = new BufferedReader(new InputStreamReader(fstream));
-
-                				String strLine;
-                				while ((strLine = br.readLine()) != null)   
-                				{
-
-                					String[] geonames=strLine.split("\t");
-                				  
-	                				boolean found=false;
-	                				String geonames_id="";
-
-	                				if(value[j].equalsIgnoreCase(geonames[1]))
-	                				{
-	                						found=true;
-	                						geonames_id=geonames[2];
-	                				}
-	                				if(found)
-	                				{
-	                					//if(resource_tag.getName().equals("description") || value.length>1)
-	                						ret.addContent(new Element("geotag",dcns).setText(value[j]));
-	                					//else
-	                					//	resource_tag.setName("geotag");
-	                					ret.addContent(new Element("geonames",dcns).setText(
-	                							"http://sws.geonames.org/"+geonames_id));
-	                					break;
-	                				}
-                				}
-                				br.close();
-                				
-                				fstream = new FileInputStream(absolute_path+"countries.db");
-                				br = new BufferedReader(new InputStreamReader(fstream));
-                				while ((strLine = br.readLine()) != null)   
-                				{
-
-                					String[] geonames=strLine.split("\t");
-                				  
-	                				boolean found=false;
-	                				String geonames_id="";
-	                				
-	                				if(value[j].equalsIgnoreCase(geonames[4]))
-	                				{
-	                						found=true;
-	                						geonames_id=geonames[16];
-	                				}
-	                				if(found)
-	                				{
-	                					//if(resource_tag.getName().equals("description") || value.length>1)
-	                						ret.addContent(new Element("geotag",dcns).setText(value[j]));
-	                					//else
-	                					//	resource_tag.setName("geotag");
-	                					ret.addContent(new Element("geonames",dcns).setText(
-	                							"http://sws.geonames.org/"+geonames_id));
-	                					break;
-	                				}
-                				}
-                				br.close();
-                				
+                			GetConfig config=new GetConfig();
+                			int enrich = 0;
+                			try {
+                				enrich = Integer.valueOf(config.getValue("geo_enrich"));
+                			} catch (NumberFormatException | IOException e1) {
+                				// TODO Auto-generated catch block
+                				e1.printStackTrace();
                 			}
                 			
+                			
+                			if(enrich==1)
+                			{	                			
+	                			String[] value=resource_tag.getText().split(" ");
+	                			
+	                			String absolute_path=System.getProperty("user.dir")+System.getProperty("file.separator")+""
+	            						+ "assets"+System.getProperty("file.separator");
+	                			
+	                			/*
+	                			 * 	TODO: 
+	                			 * 		rethink about case sensitive/insensitive
+	                			 * 
+	                			 * */
+	                			for(int j=0;j<value.length;j++)
+	                			{
+	                				value[j]=value[j].replace(",", "");
+	                				value[j]=value[j].replace("(", "");
+	                				value[j]=value[j].replace(")", "");
+	                				
+	                				FileInputStream fstream = new FileInputStream(absolute_path+"continents.db");
+	                				BufferedReader br = new BufferedReader(new InputStreamReader(fstream));
+	
+	                				String strLine;
+	                				while ((strLine = br.readLine()) != null)   
+	                				{
+	
+	                					String[] geonames=strLine.split("\t");
+	                				  
+		                				boolean found=false;
+		                				String geonames_id="";
+	
+		                				if(value[j].equalsIgnoreCase(geonames[1]))
+		                				{
+		                						found=true;
+		                						geonames_id=geonames[2];
+		                				}
+		                				if(found)
+		                				{
+		                					//if(resource_tag.getName().equals("description") || value.length>1)
+		                						ret.addContent(new Element("geotag",dcns).setText(value[j]));
+		                					//else
+		                					//	resource_tag.setName("geotag");
+		                					ret.addContent(new Element("geonames",dcns).setText(
+		                							"http://sws.geonames.org/"+geonames_id));
+		                					break;
+		                				}
+	                				}
+	                				br.close();
+	                				
+	                				fstream = new FileInputStream(absolute_path+"countries.db");
+	                				br = new BufferedReader(new InputStreamReader(fstream));
+	                				while ((strLine = br.readLine()) != null)   
+	                				{
+	
+	                					String[] geonames=strLine.split("\t");
+	                				  
+		                				boolean found=false;
+		                				String geonames_id="";
+		                				
+		                				if(value[j].equalsIgnoreCase(geonames[4]))
+		                				{
+		                						found=true;
+		                						geonames_id=geonames[16];
+		                				}
+		                				if(found)
+		                				{
+		                					//if(resource_tag.getName().equals("description") || value.length>1)
+		                						ret.addContent(new Element("geotag",dcns).setText(value[j]));
+		                					//else
+		                					//	resource_tag.setName("geotag");
+		                					ret.addContent(new Element("geonames",dcns).setText(
+		                							"http://sws.geonames.org/"+geonames_id));
+		                					break;
+		                				}
+	                				}
+	                				br.close();
+	                				
+	                			}
+                			}
                 		}
                         
                 		
@@ -246,6 +261,12 @@ public class CimmytRecord extends OAIRecord  {
                 		if(resource_tag.getName().equals("language"))
                 		{
                 			String value=resource_tag.getText();
+                			
+                			value=value.replace("Englilsh", "English");
+                			value=value.replace("(", "");
+                			value=value.replace(")", "");
+                			value=value.replace("United States", "");
+                			value=value.replace("United Kingdom", "");
                 			
                 			String absolute_path=System.getProperty("user.dir")+System.getProperty("file.separator")+""
             						+ "assets"+System.getProperty("file.separator");
