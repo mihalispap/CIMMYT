@@ -263,6 +263,8 @@ public class CimmytRecord extends OAIRecord  {
                 			String value=resource_tag.getText();
                 			
                 			value=value.replace("Englilsh", "English");
+                			value=value.replace("Engish", "English");
+                			value=value.replace("Englis", "English");
                 			value=value.replace("(", "");
                 			value=value.replace(")", "");
                 			value=value.replace("United States", "");
