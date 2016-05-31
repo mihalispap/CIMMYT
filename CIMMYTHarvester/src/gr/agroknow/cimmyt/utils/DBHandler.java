@@ -90,8 +90,7 @@ public class DBHandler {
 
 	public void writeToFile(String filename)
 	{
-		if(1==1)
-			return;
+
 		PrintWriter writer;
 		try {
 			writer = new PrintWriter(filename, "UTF-8");
