@@ -104,7 +104,18 @@ public class CimmytRecord extends OAIRecord  {
             				String[] values=resource_tag.getText().split("/");
 					        String[] domain=values[0].split(":");
 					        
-					        apiid=domain[1]+"_"+values[1];
+					        //System.out.println("TEXT:"+resource_tag.getText());
+					        
+					        try
+					        {
+					        	apiid=domain[1]+"_"+values[1];
+					        }
+					        catch(java.lang.ArrayIndexOutOfBoundsException e)
+					        {
+					        	//Sample (for dvn): 1//hdl:11529/10217
+					        	domain=values[2].split(":");
+					        	apiid=domain[1]+"_"+values[values.length-1];
+					        }
             			}
             			else if(resource_tag.getText().contains("koha-oai-cimmyt"))
             			{
@@ -370,7 +381,7 @@ public class CimmytRecord extends OAIRecord  {
 	                        	/*Important to check that ALL resources have this!*/
 	                        	ret.addContent(new Element("apiid",dcns).setText(domain_id+"_"+doc_id));
 	                        	
-	                        	System.out.println("From here..1");
+	                        	//System.out.println("From here..1");
 	                        	
 	                        	apiid=domain_id+"_"+doc_id;
 	                        	flag=true;

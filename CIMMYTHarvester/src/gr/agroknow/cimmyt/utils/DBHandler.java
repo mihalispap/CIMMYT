@@ -129,7 +129,7 @@ public class DBHandler {
 		args[1]=folderName;
 		args[2]=metadataPrefix; 
 		
-		if(target.contains("data.cimmyt") || target.contains("knowledgecenter.cimmyt"))
+		if(target.contains("data.cimmyt"))
 		{
 			HarvestAllProcess harvest_all=new HarvestAllProcess();
 			try {
@@ -157,7 +157,7 @@ public class DBHandler {
 		Calendar calendar = new GregorianCalendar();
 			
 		//subtract 10 days
-		calendar.add(Calendar.DAY_OF_MONTH, -2);
+		//calendar.add(Calendar.DAY_OF_MONTH);
 		System.out.println("Date : " + sdf.format(calendar.getTime()));
 		
 		String until=sdf.format(calendar.getTime());
@@ -179,7 +179,11 @@ public class DBHandler {
 				
 				/*TODO: to think about it..*/
 				if(norecords!=0)
+				{
+					calendar.add(Calendar.DAY_OF_MONTH, -2);
+					until=sdf.format(calendar.getTime());
 					sets.get(i).setLastIndexed(until);
+				}
 
 			} catch (OAIException | IOException | JDOMException e) {
 				// TODO Auto-generated catch block
