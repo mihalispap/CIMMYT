@@ -111,7 +111,7 @@ public class OAIResumptionStream {
         catch (MalformedURLException mue) {
             throw new OAIException(14, mue.getMessage());
         }
-        System.out.println("URL"+url);
+        //System.out.println("URL"+url);
         this.performGet(url);
     }
     
@@ -200,7 +200,7 @@ public class OAIResumptionStream {
                 }
                 catch (JDOMException se) {
                     if (this.oParent.isFixXmlEncoding()) {
-                        System.out.println("Invalid characters found1 !!!! Error : " + se.getMessage());
+                        //System.out.println("Invalid characters found1 !!!! Error : " + se.getMessage());
                         //if(1==1)
                         //	return;
                         http.disconnect();
@@ -213,7 +213,7 @@ public class OAIResumptionStream {
                             buffer.append(line + "\n");
                         }
                         try {
-                        	System.out.println("Try here1..");
+                        	//System.out.println("Try here1..");
                             String pattern = "[^\\x20-\\x7e]";
                             String replaceAll = buffer.toString().replaceAll(pattern, "");
                             replaceAll = stripInvalidXmlCharacters(buffer.toString());
@@ -223,7 +223,7 @@ public class OAIResumptionStream {
                             replaceAll=stripNonValidXMLCharacters(replaceAll);
                             this.xml = docBuilder.build((Reader)new StringReader(replaceAll));
 
-                            System.out.println("Try here2..");
+                            //System.out.println("Try here2..");
                             
                             /*pattern = ">";
                             replaceAll = replaceAll.replaceAll(pattern, " ");
@@ -251,7 +251,7 @@ public class OAIResumptionStream {
                             
                             //System.out.println(replaceAll);
                             IOUtilsv2.writeStringToFileInEncodingUTF8((String)replaceAll, (String)("oaireturn-" + GregorianCalendar.getInstance().getTimeInMillis() + "-" + se.getMessage().replaceAll(" ", "_") + ".xml"));
-                            System.out.println("Try here3..");
+                            //System.out.println("Try here3..");
                         }
                         catch (JDOMException e) {
                             if (this.oParent.getValidation() != 2) {
@@ -263,7 +263,7 @@ public class OAIResumptionStream {
                                 http = this.oParent.frndTrySend(http);
                                 inputStream = http.getInputStream();
                                 this.xml = docBuilder.build(this.priCreateDummyResponse(inputStream));
-                                System.out.println("Up until here!");
+                                //System.out.println("Up until here!");
                                 break block21;
                             }
                             catch (JDOMException se2) {
@@ -284,8 +284,8 @@ public class OAIResumptionStream {
                     catch (JDOMException se2) {
                         throw new OAIException(13, se2.getMessage());
                     }
-                    System.out.println("URL"+url);
-                    System.out.println("Got out!");
+                    //System.out.println("URL"+url);
+                    //System.out.println("Got out!");
                 }
             }
             this.setNameSpace();
@@ -301,22 +301,22 @@ public class OAIResumptionStream {
             docBuilder = null;
             url = null;
             
-            System.out.println("Got here!");
+            //System.out.println("Got here!");
         }
         catch (JDOMException te) {
-        	System.out.println("Got out2!");
+        	//System.out.println("Got out2!");
             throw new OAIException(14, te.getMessage());
         }
         catch (MalformedURLException mue) {
-        	System.out.println("Got out3!");
+        	//System.out.println("Got out3!");
             throw new OAIException(14, mue.getMessage());
         }
         catch (FactoryConfigurationError fce) {
-        	System.out.println("Got out4!");
+        	//System.out.println("Got out4!");
             throw new OAIException(14, fce.getMessage());
         }
         catch (IOException ie) {
-        	System.out.println("Got out5!");
+        	//System.out.println("Got out5!");
             throw new OAIException(14, ie.getMessage());
         }
     }
@@ -790,7 +790,7 @@ public class OAIResumptionStream {
             throw new OAIException(14, e.getMessage());
         }
         this.performGet(url);
-        System.out.println("In here URL:"+url);
+        //System.out.println("In here URL:"+url);
         this.iRealCursor += prevCount;
         this.iIndex = 1;
     }
@@ -861,7 +861,7 @@ public class OAIResumptionStream {
             throw new OAIException(14, e.getMessage());
         }
         this.performGet(url);
-        System.out.println("In here URL2:"+url);
+        //System.out.println("In here URL2:"+url);
         this.iRealCursor += prevCount;
         this.iIndex = 1;
     }

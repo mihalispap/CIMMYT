@@ -94,7 +94,7 @@ public class HarvestManager {
 			setList.moveNext();
 		}
 		
-		System.out.println(counter);
+		System.out.println(target+" Sets:"+counter);
 		
 		db.harvestSets(target, folderName, metadataPrefix);
 		

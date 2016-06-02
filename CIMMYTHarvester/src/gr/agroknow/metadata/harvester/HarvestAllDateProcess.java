@@ -106,7 +106,7 @@ public class HarvestAllDateProcess {
 				}
 			records.moveNext();
 		}
-		System.out.println(counter);
+		System.out.println("Set("+SetSpec+"):"+counter);
 		return counter;
 	}
     

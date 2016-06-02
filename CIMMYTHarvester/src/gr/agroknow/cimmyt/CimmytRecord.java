@@ -127,7 +127,7 @@ public class CimmytRecord extends OAIRecord  {
 					        domain="koha-oai-cimmyt";
 					        
 					        apiid=String.valueOf(domain.hashCode());//+"_"+values[1];
-					        System.out.println("APPID:"+apiid);
+					        //System.out.println("APPID:"+apiid);
             			}
                     }
 
@@ -388,7 +388,7 @@ public class CimmytRecord extends OAIRecord  {
                         	}
                         	catch(java.lang.ArrayIndexOutOfBoundsException e)
                         	{
-                        		e.printStackTrace();
+                        		//e.printStackTrace();
                         	}                      	
                         	
                         }
@@ -436,7 +436,7 @@ public class CimmytRecord extends OAIRecord  {
                         	if (matcher.find())
                         	{
                         	    //System.out.println(matcher.group(0));
-                        		System.out.println("Got in2!");
+                        		//System.out.println("Got in2!");
                         	    String doi=matcher.group(0).replace("doi:","http://dx.doi.org/");
                         	    ret.addContent(new Element("doi",dcns).setText(doi));
                         	}
@@ -447,7 +447,7 @@ public class CimmytRecord extends OAIRecord  {
                         		matcher = pattern.matcher(relation);
                         		if (matcher.find())
                             	{
-                            	    System.out.println("Got in!");
+                            	    //System.out.println("Got in!");
                             	    String doi=matcher.group(0).replace("doi:","http://dx.doi.org/");
                             	    resource_tag.setText(doi);
                             	}

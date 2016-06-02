@@ -86,27 +86,6 @@ public class HarvestAllProcess{
 			//OAIRecord item = records.getCurrentItem();
 			CimmytRecord item = records.getCurrentItem();
 
-			/*if(!item.deleted()) {
-				Element metadata = item.getMetadata();
-				if(metadata != null) {
-					System.out.println(item.getIdentifier());
-					Record rec = new Record();
-					//rec.setOaiRecord(item);
-					rec.setMetadata(item.getMetadata());
-					rec.setOaiIdentifier(item.getIdentifier());
-                                        identifier = item.getIdentifier().replaceAll(":", "_");
-                                        identifier = identifier.replaceAll("/",".");
-					IOUtilsv2.writeStringToFileInEncodingUTF8(OaiUtils.parseLom2Xmlstring(metadata), folderName + "/" + identifier +".xml");
-
-				}
-				else {
-					System.out.println(item.getIdentifier() + " deleted");
-				}
-			}
-            else {
-					System.out.println(item.getIdentifier() + " deleted");
-            }
-			records.moveNext();*/
 			if(!item.deleted()) {
 				Element metadata = item.getMetadata(target,folderName);
 				if(metadata != null) {
@@ -131,7 +110,7 @@ public class HarvestAllProcess{
 				}
 			records.moveNext();
 		}
-		System.out.println(counter);
+		System.out.println("All:"+counter);
 		return counter;
 	}
 

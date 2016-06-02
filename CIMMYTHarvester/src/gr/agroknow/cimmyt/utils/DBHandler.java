@@ -158,7 +158,7 @@ public class DBHandler {
 			
 		//subtract 10 days
 		//calendar.add(Calendar.DAY_OF_MONTH);
-		System.out.println("Date : " + sdf.format(calendar.getTime()));
+		//System.out.println("Date : " + sdf.format(calendar.getTime()));
 		
 		String until=sdf.format(calendar.getTime());
 		
