@@ -275,7 +275,7 @@ public class CimmytRecord extends OAIRecord  {
                 			
                 			value=value.replace("Englilsh", "English");
                 			value=value.replace("Engish", "English");
-                			value=value.replace("Englis", "English");
+                			//value=value.replace("Englis", "English");
                 			value=value.replace("(", "");
                 			value=value.replace(")", "");
                 			value=value.replace("United States", "");
@@ -289,6 +289,8 @@ public class CimmytRecord extends OAIRecord  {
                 			 * 		rethink about case sensitive/insensitive
                 			 * 
                 			 * */
+                			
+                				//System.out.println("GOT IN WITH:"+value);
                 			
                 				FileInputStream fstream = new FileInputStream(absolute_path+"iso-languagecodes.db");
                 				BufferedReader br = new BufferedReader(new InputStreamReader(fstream));
@@ -304,6 +306,7 @@ public class CimmytRecord extends OAIRecord  {
 	                				if(value.equalsIgnoreCase(langs[3]) || value.equalsIgnoreCase(langs[2]))
 	                				{
 	                						found=true;
+	                						//System.out.println("FOUND LANG");
 	                				}
 	                				if(found)
 	                				{
