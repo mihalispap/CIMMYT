@@ -536,6 +536,9 @@ public class CimmytRecord extends OAIRecord  {
                      }
                      for(int i=0;i<sets.size();i++)
                      {
+                    	 if(sets.get(i).equals("com_10883_1"))
+                    		 continue;
+                    	 
                     	 ret.addContent(new Element("cset",dcns).setText(sets.get(i)));
                     	 
                     	 String setid=handler+sets.get(i);

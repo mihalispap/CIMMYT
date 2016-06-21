@@ -171,9 +171,10 @@ public class DBHandler {
 			args[3]=until;//"2012-01-01";	//TODO: change until yesterday!
 			args[5]=sets.get(i).getSetSpec();
 			
-			//args[5]="2";
-			//args[4]="2016-04-17";
-			
+			//if(args[5].equals("com_10883_1"))
+			//	continue;
+
+
 			try {
 				int norecords=harvest_set.run(args);
 				
