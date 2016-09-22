@@ -171,8 +171,8 @@ public class DBHandler {
 			args[3]=until;//"2012-01-01";	//TODO: change until yesterday!
 			args[5]=sets.get(i).getSetSpec();
 			
-			//if(args[5].equals("com_10883_1"))
-			//	continue;
+			if(args[5].equals("com_10883_1"))
+				continue;
 
 
 			try {
